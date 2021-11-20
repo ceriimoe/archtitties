@@ -1,3 +1,6 @@
+chmod +x ./ArchTitties-Phase1
+chmod +x ./ArchTitties-Phase2
+
 bash ./ArchTitties-Phase1
 cp ./ArchTitties-Phase2 /mnt
 arch-chroot /mnt /ArchTitties-Phase2
