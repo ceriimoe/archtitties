@@ -5,7 +5,7 @@ bash ./ArchTitties-Phase1
 cp ./ArchTitties-Phase2 /mnt
 arch-chroot /mnt /ArchTitties-Phase2
 sleep 1
-echo "(ArchTitties) Removing the Phase 2 script...
+echo "(ArchTitties) Removing the Phase 2 script..."
 rm /mnt/ArchTitties-Phase2
 sleep 1
 reboot now
