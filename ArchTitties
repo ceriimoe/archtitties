@@ -1,0 +1,4 @@
+bash ./ArchTitties-Phase1
+cp ./ArchTitties-Phase2 /mnt
+arch-chroot /mnt /ArchTitties-Phase2
+reboot now

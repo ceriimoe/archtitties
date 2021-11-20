@@ -1,0 +1,109 @@
+# ArchTitties - making ArchLinux installation better than you could imagine
+# _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______
+# |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______
+# |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|
+#
+# Proudly developed by acidfall/4rotr.
+
+# Setting some colours
+black='\033[0;30m'
+red='\033[0;31m'
+green='\033[0;32m'
+blue='\033[0;34m'
+lblue='\033[1;34m'
+lred='\033[1;31m'
+white='\033[1;37m'
+
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
+echo
+echo -e "$green Installing GRUB now (as we are under arch-chroot)..."
+grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi
+grub-mkconfig -o /boot/grub/grub.cfg
+echo -e "$lblue Waiting 5 seconds if anything went wrong"
+sleep 5
+
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
+echo
+echo -e "$green Your timezone has been set to London and your locale has been set to US for now. "
+echo -e "$red Timezone changing is planned for later. Check github.com/4rotr/archtitties for updates"
+timedatectl set-timezone Europe/London
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+export LANG=en_US.UTF-8
+
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Phase 2 ]-------------------------------------------------[ Hostname and User ]-"
+echo
+echo -e "$green Set a hostname for this install: "
+read hostname
+echo $hostname > /etc/hostname
+echo -e "$white Creating hosts file..."
+touch /etc/hosts
+echo "127.0.0.1\tlocalhost\n::1\tlocalhost\n127.0.1.1\t$hostname" > /etc/hosts
+echo -e "$green Set a username for the user that will be created: "
+read username
+useradd -m -G wheel -s /bin/bash $username
+echo -e "$white Set a password for $username"
+passwd $username
+sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers #line taken from archtitus
+
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Phase 2 ]------------------------------------------------[ Desktop Environment ]-"
+echo
+echo -e "$green ArchTitties has the capability to install KDE Plasma and XFCE4 right now."
+echo -e "$green Pick one of the two: "
+read desktop
+
+case $desktop in
+kde|KDE|plasma|Plasma|PLASMA)
+pacman -S --needed --noconfirm xorg plasma konsole networkmanager
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable sddm.service
+systemctl enable NetworkManager.service
+;;
+
+xfce|XFCE|Xfce|xfce4|XFCE4|Xfce4)
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter xfce4 networkmanager
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable lightdm
+systemctl enable NetworkManager.service
+;;
+
+*)
+echo -e "$red Assuming that you will want to install it later."
+echo -e "$red Sometimes running without a desktop environment may lead to no network."
+esac
+
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Completed ]---------------------------------------------------------------------"
+echo
+echo -e "$green You have completed the setup. Your system will automatically reboot in 5 seconds."
+sleep 5
+exit
