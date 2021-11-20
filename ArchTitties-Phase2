@@ -105,5 +105,5 @@ echo
 echo -e "$lblue -[ Completed ]---------------------------------------------------------------------"
 echo
 echo -e "$green You have completed the setup. Your system will automatically reboot in 5 seconds."
-sleep 5
+sleep 3
 exit
