@@ -21,8 +21,6 @@ echo -e "$white ArchTitties uses the Tamsyn font, installing that now."
 pacman -Syy > /dev/null
 pacman -S --needed --noconfirm tamsyn-font > /dev/null
 setfont Tamsyn10x20r
-echo -e "$white Getting prerequisites..."
-pacman -S --needed --noconfirm grub > /dev/null
 
 clear
 echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
@@ -68,7 +66,7 @@ echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __
 echo
 echo -e "$lblue -[ Phase 1 ]--------------------------------------------------------[ Disk Setup ]-"
 echo
-echo -e "$red BIOS/CSM support is planned for later. Check github.com/4rotr/archtitties for updates"
+fdisk -l
 echo -e "$green Which disk would you like to use? (i.e. /dev/sdX $red OR $green /dev/nvmeX $red OR $green /dev/mmcblkX)"
 read disk
 echo -e "$red ALL DATA WILL BE WIPED FROM THIS DRIVE. Do you wish to continue? (y/n) "
@@ -87,28 +85,52 @@ y|Y|yes|YES)
 	echo -e "$white Formatting..."
 	sgdisk -Z ${disk}
 	sgdisk -a 2048 -o ${disk}
-	sgdisk -n 1::+512M --typecode=1:ef00 ${disk}
-	echo -e "EFI partition created"
-	sgdisk -n 2::-0 --typecode=2:8300 ${disk}
-	echo -e "Root partition created"
-	echo -e "$lblue Creating file systems..."
-	if [[ ${DISK} =~ "nvme" ]]; then
-		mkfs.fat -F32 ${disk}p1
-		mkfs.ext4 ${disk}p2
-	elif [[ ${DISK} =~ "mmcblk" ]]; then
-		mkfs.fat -F32 ${disk}p1
-		mkfs.ext4 ${disk}p2
+	if [ -d "/sys/firmware/efi" ]; then
+		sgdisk -n 1::+512M --typecode=1:ef00 ${disk}
+		echo -e "EFI partition created"
+		sgdisk -n 2::-0 --typecode=2:8300 ${disk}
+		echo -e "Root partition created"
+		echo -e "$lblue Creating file systems..."
+		if [[ ${disk} =~ "nvme" ]]; then
+			mkfs.fat -F32 ${disk}p1
+			mkfs.ext4 ${disk}p2
+		elif [[ ${disk} =~ "mmcblk" ]]; then
+			mkfs.fat -F32 ${disk}p1
+			mkfs.ext4 ${disk}p2
+		else
+			mkfs.fat -F32 ${disk}1
+			mkfs.ext4 ${disk}2
+		fi
+		echo -e "$lblue Mounting root partition..."
+		if [[ ${disk} =~ "nvme" ]]; then
+			mount ${disk}p2 /mnt
+		elif [[ ${disk} =~ "mmcblk" ]]; then
+			mount ${disk}p2 /mnt
+		else
+			mount ${disk}2 /mnt
+		fi
 	else
-		mkfs.fat -F32 ${disk}1
-		mkfs.ext4 ${disk}2
-	fi
-	echo -e "$lblue Mounting root partition..."
-	if [[ ${DISK} =~ "nvme" ]]; then
-		mount ${disk}p2 /mnt
-	elif [[ ${DISK} =~ "mmcblk" ]]; then
-		mount ${disk}p2 /mnt
-	else
-		mount ${disk}2 /mnt
+		sgdisk -n 1::+1M --typecode=1:ef02 ${disk}
+		echo -e "BIOS boot partition created"
+		sgdisk -n 2::-0 --typecode=2:8300 ${disk}
+		echo -e "Root partition created"
+		sgdisk -A 1:set:2 ${disk}
+		echo -e "$lblue Creating file systems..."
+		if [[ ${disk} =~ "nvme" ]]; then
+			mkfs.ext4 ${disk}p2
+		elif [[ ${disk} =~ "mmcblk" ]]; then
+			mkfs.ext4 ${disk}p2
+		else
+			mkfs.ext4 ${disk}2
+		fi
+		echo -e "$lblue Mounting root partition..."
+		if [[ ${disk} =~ "nvme" ]]; then
+			mount ${disk}p2 /mnt
+		elif [[ ${disk} =~ "mmcblk" ]]; then
+			mount ${disk}p2 /mnt
+		else
+			mount ${disk}2 /mnt
+		fi
 	fi
 	;;
 *)
@@ -126,16 +148,21 @@ echo
 echo -e "$lblue -[ Phase 1 ]------------------------------------------------[ Installation Setup ]-"
 echo
 echo -e "$green Good news! This part here is almost entirely automated. Just sit back and relax."
-pacstrap /mnt base base-devel linux linux-firmware vim nano grub efibootmgr --noconfirm --needed
-genfstab -U /mnt >> /mnt/etc/fstab
-mkdir /mnt/boot/efi
-if [[ ${DISK} =~ "nvme" ]]; then
-	mount ${disk}p1 /mnt/boot/efi
-elif [[ ${DISK} =~ "mmcblk" ]]; then
-	mount ${disk}p1 /mnt/boot/efi
+if [ -d "/sys/firmware/efi" ]; then
+	pacstrap /mnt base base-devel linux linux-firmware vim nano grub efibootmgr --noconfirm --needed
+	mkdir /mnt/boot/efi
+	if [[ ${disk} =~ "nvme" ]]; then
+		mount ${disk}p1 /mnt/boot/efi
+	elif [[ ${disk} =~ "mmcblk" ]]; then
+		mount ${disk}p1 /mnt/boot/efi
+	else
+		mount ${disk}1 /mnt/boot/efi
+	fi
 else
-	mount ${disk}1 /mnt/boot/efi
+	pacstrap /mnt base base-devel linux linux-firmware vim nano grub --noconfirm --needed
+	touch /mnt/disk
+	echo ${disk} > /mnt/disk
 fi
-echo
+genfstab -U /mnt >> /mnt/etc/fstab
 echo -e "$white Phase 1 complete, starting phase 2 in 3 seconds."
 sleep 3
