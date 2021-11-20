@@ -15,17 +15,21 @@ lred='\033[1;31m'
 white='\033[1;37m'
 
 clear
-echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
-echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
-echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
-echo
-echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
-echo
-echo -e "$green Installing GRUB now (as we are under arch-chroot)..."
-grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi
-grub-mkconfig -o /boot/grub/grub.cfg
-echo -e "$lblue Waiting 5 seconds if anything went wrong"
-sleep 5
+	echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+	echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+	echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+	echo
+	echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
+	echo
+	echo -e "$green Installing GRUB now (as we are under arch-chroot)..."
+if [ -d "/sys/firmware/efi" ]; then
+	grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi
+	grub-mkconfig -o /boot/grub/grub.cfg
+else
+	disk=$(cat /disk)
+	grub-install ${disk}
+	grub-mkconfig -o /boot/grub/grub.cfg
+fi
 
 clear
 echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
