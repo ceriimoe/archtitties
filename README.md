@@ -9,6 +9,7 @@ Just install Git. Any prerequisites are installed by the installer.
 ***
 
 # THIS SCRIPT IS VERY EARLY IN DEVELOPMENT - ONLY TESTED IN A VM
+Install at your own risk. Run `git clone https://github.com/4rotr/archtitties.git`, then enter the archtitties directory, then ./ArchTitties
 
 ## Why is it called ArchTitties?
 Purely for comedic value, however it's an acronym for **T**he **I**nstaller **T**hat **T**ries to **I**nstall **E**verything **S**uddenly. 
