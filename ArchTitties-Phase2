@@ -29,6 +29,7 @@ else
 	disk=$(cat /disk)
 	grub-install ${disk}
 	grub-mkconfig -o /boot/grub/grub.cfg
+	rm /disk #considering we only run this once, i might as well do some cleanup
 fi
 
 clear
@@ -38,9 +39,23 @@ echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __
 echo
 echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
 echo
-echo -e "$green Your timezone has been set to London and your locale has been set to US for now. "
-echo -e "$red Timezone changing is planned for later. Check github.com/4rotr/archtitties for updates"
-timedatectl set-timezone Europe/London
+echo -e "$green Opening the timezone list in 3 seconds. Note it down, press Q, and put it here."
+echo -e "$red Looking for an automatic method! Let me know - github.com/4rotr/archtitties"
+sleep 3
+timedatectl list-timezones
+clear
+echo -e "$lblue _______  ______ _______ _     _ _______ _____ _______ _______ _____ _______ _______"
+echo -e "$lblue |_____| |_____/ |       |_____|    |      |      |       |      |   |______ |______"
+echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __|__ |______ ______|"
+echo
+echo -e "$lblue -[ Phase 2 ]-----------------------------------------------------------------------"
+echo
+read -p "Timezone: " timezone
+timedatectl set-timezone $timezone
+if [ ! $? -eq 0 ]; then
+	echo -e "$red Timezone invalid. Using fallback (Europe/London)."
+	timedatectl set-timezone Europe/London
+fi
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 echo LANG=en_US.UTF-8 > /etc/locale.conf
