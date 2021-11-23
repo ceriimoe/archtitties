@@ -3,13 +3,15 @@ Probably the Arch Linux installation script that'll work for you.
 
 ***
 
+# I may have just noticed an issue with XFCE4 installations that may potentially exclude audio. This will be fixed at some point.
+However, you can install your preferred audio application post-setup.
+
 ## Prerequisites
 Just install Git on an Arch live USB, either via ArchISO or just installing it in the live environment. Any prerequisites required will installed by the installer.
 
 ***
 
-# THIS SCRIPT IS VERY EARLY IN DEVELOPMENT - ONLY TESTED IN A VM
-Install at your own risk. Run `git clone https://github.com/4rotr/archtitties.git`, then enter the archtitties directory. Run `chmod +x ArchTitties` then run the script, which will enable Phase 1 and Phase 2 scripts to run.
+Run `git clone https://github.com/4rotr/archtitties.git`, then enter the archtitties directory. Run `chmod +x ArchTitties` then run the script, which will enable Phase 1 and Phase 2 scripts to run.
 
 ## Why is it called ArchTitties?
 Purely for comedic value, however it's an acronym for **T**he **I**nstaller **T**hat **T**ries to **I**nstall **E**verything **S**uddenly. 
