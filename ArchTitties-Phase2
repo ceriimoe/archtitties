@@ -77,7 +77,7 @@ echo "127.0.0.1\tlocalhost\n::1\tlocalhost\n127.0.1.1\t$hostname" > /etc/hosts
 echo -e "$green Set a username for the user that will be created: "
 read username
 useradd -m -G wheel -s /bin/bash $username
-echo -e "$white Set a password for $username"
+echo -e "$white Set a password for ${username}."
 passwd $username
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers #line taken from archtitus
 
@@ -88,8 +88,10 @@ echo -e "$lblue |     | |    \_ |_____  |     |    |    __|__    |       |    __
 echo
 echo -e "$lblue -[ Phase 2 ]------------------------------------------------[ Desktop Environment ]-"
 echo
-echo -e "$green ArchTitties has the capability to install KDE Plasma and XFCE4 right now."
-echo -e "$green Pick one of the two: "
+echo -e "$green ArchTitties has the capability to install the following environments right now."
+echo -e "$white KDE Plasma, XFCE4, LXDE, MATE, Cinnamon, with i3-gaps as a WM alternative."
+echo -e "$white LightDM will be selected if you choose any but KDE Plasma."
+echo -e "$green Pick one: "
 read desktop
 
 case $desktop in
@@ -103,7 +105,7 @@ systemctl enable NetworkManager.service
 ;;
 
 xfce|XFCE|Xfce|xfce4|XFCE4|Xfce4)
-pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter xfce4 networkmanager
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter xfce4 xfce4-goodies networkmanager pulseaudio pulseaudio-alsa
 if lspci | grep -E "NVIDIA|GeForce"; then
 pacman -S nvidia --noconfirm --needed && nvidia-xconfig
 fi
@@ -111,6 +113,41 @@ systemctl enable lightdm
 systemctl enable NetworkManager.service
 ;;
 
+lxde|LXDE|Lxde)
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter lxde networkmanager pulseaudio pulseaudio-alsa
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable lightdm
+systemctl enable NetworkManager.service
+;;
+
+mate|MATE|Mate)
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter mate mate-extra networkmanager pulseaudio pulseaudio-alsa
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable lightdm
+systemctl enable NetworkManager.service
+;;
+
+cinnamon|CINNAMON|Cinnamon)
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter cinnamon lxterminal networkmanager pulseaudio pulseaudio-alsa
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable lightdm
+systemctl enable NetworkManager.service
+;;
+
+i3|i3wm|i3-wm|i3gaps|i3-gaps|I3)
+pacman -S --needed --noconfirm xorg lightdm lightdm-gtk-greeter i3-gaps rxvt-unicode i3blocks i3lock i3status dmenu networkmanager pulseaudio pulseaudio-alsa
+if lspci | grep -E "NVIDIA|GeForce"; then
+pacman -S nvidia --noconfirm --needed && nvidia-xconfig
+fi
+systemctl enable lightdm
+systemctl enable NetworkManager.service
+;;
 *)
 echo -e "$red Assuming that you will want to install it later."
 echo -e "$red Sometimes running without a desktop environment may lead to no network."
