@@ -3,9 +3,6 @@ Probably the Arch Linux installation script that'll work for you.
 
 ***
 
-# I may have just noticed an issue with XFCE4 installations that may potentially exclude audio. This will be fixed at some point.
-However, you can install your preferred audio application post-setup.
-
 ## Prerequisites
 Just install Git on an Arch live USB, either via ArchISO or just installing it in the live environment. Any prerequisites required will installed by the installer.
 
@@ -24,3 +21,14 @@ Nothing if you can edit it with some useful tweaks.
 
 ## Is it just you that works on ArchTitties, 4rotr?
 Yes, for now.
+
+# Current statistics
+Under the development VM, this is our results for RAM usage **out of the box**.
+- KDE Plasma installs: 468MiB
+- XFCE4 installs: Unknown
+- LXDE installs: 204MiB
+- MATE installs: 317MiB
+- Cinnamon installs: 524MiB
+- i3-gaps installs: 133MiB
+- (Just for fun) GNOME 41 installs: 800MiB
+For reference: I compared this to Ubuntu 21.10 (GNOME 40.5) and saw around 1GiB of ram usage.
