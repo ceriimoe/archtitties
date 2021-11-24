@@ -31,4 +31,5 @@ Under the development VM, this is our results for RAM usage **out of the box**.
 - Cinnamon installs: 524MiB
 - i3-gaps installs: 133MiB
 - (Just for fun) GNOME 41 installs: 800MiB
+
 For reference: I compared this to Ubuntu 21.10 (GNOME 40.5) and saw around 1GiB of ram usage.
