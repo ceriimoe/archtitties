@@ -79,6 +79,9 @@ read username
 useradd -m -G wheel -s /bin/bash $username
 echo -e "$white Set a password for ${username}."
 passwd $username
+echo -e "$white Set a password for the root account."
+passwd root
+# OH MY GOD HOW DID I NOT REALISE THIS WASNT HERE
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers #line taken from archtitus
 
 clear
