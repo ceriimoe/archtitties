@@ -1,0 +1,2 @@
+chmod +x ./ArchTitties-Phase1.sh && chmod +x ./ArchTitties-Phase2.sh && bash ./ArchTitties-Phase1.sh && cp ./ArchTitties-Phase2.sh /mnt && arch-chroot /mnt /ArchTitties-Phase2.sh && rm /mnt/ArchTitties-Phase2.sh
+reboot now
