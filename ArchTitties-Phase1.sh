@@ -7,18 +7,6 @@ echo -e "\e[1;34m[ArchTitties] - Preparation work\e[0m"
 mkdir /tmp/ArchTitties-Settings # This holds the settings for installation.
 mkdir /tmp/ArchTitties-Temp # This holds any temporary files we need.
 
-# Log generation setting
-read -r -p "Would you like to have a log generated post install? (y/n) " LogAnswer
-case $LogAnswer in
-    y|Y|yes|YES)
-        touch /tmp/ArchTitties-Settings/CreateLog
-        echo -e "\e[1;32mSetting file created. Logs will be saved.\e[0m"
-        touch /tmp/ArchTitties-Temp/ArchTitties.log
-        ;;
-    *)
-        echo -e "\e[1;31mLogs will not be saved.\e[0m"
-esac
-
 echo -e "Installing dependencies..."
 pacman -Syy > /dev/null && pacman -S --needed --noconfirm reflector archlinux-keyring > /dev/null
 
