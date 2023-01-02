@@ -1,3 +1,4 @@
+# Archived as of January 2023. Shifting away and potentially rewriting with a new name
 # ArchTitties
 Probably the Arch Linux installation script that'll work for you.
 
